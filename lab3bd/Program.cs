@@ -93,6 +93,7 @@ class Program
     }
 
 
+
     static void ShowPostachalnyky(MySqlConnection connection)
     {
         string query = "SELECT * FROM postachalnyky;";
