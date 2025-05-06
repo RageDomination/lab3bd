@@ -371,7 +371,6 @@ class Program
 
             Console.WriteLine("\nДані з таблиці 'Замовлення':");
 
-            // Выводим заголовки колонок
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 string columnName = reader.GetName(i);
@@ -384,7 +383,6 @@ class Program
 
             Console.WriteLine(new string('-', reader.FieldCount * 22));
 
-            // Выводим данные строк
             while (reader.Read())
             {
                 for (int i = 0; i < reader.FieldCount; i++)
@@ -400,7 +398,6 @@ class Program
 
             reader.Close();
 
-            // Меню действий
             Console.WriteLine("\nОберіть дію:");
             Console.WriteLine("1 - Додати нове замовлення");
             Console.WriteLine("2 - Переглянути повну інформацію про замовлення");
