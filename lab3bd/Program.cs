@@ -14,42 +14,152 @@ class Program
         try
         {
             connection.Open();
-            Console.WriteLine("Підключення до бази даних lab2 успішне!");
+            Console.WriteLine(" Підключення до бази даних lab2 успішне!");
 
-            string queryMaterials = "SELECT * FROM materials;";
-            var commandMaterials = new MySqlCommand(queryMaterials, connection);
-            using var readerMaterials = commandMaterials.ExecuteReader();
-            Console.WriteLine("\nДані з таблиці 'Матерiали':");
-            while (readerMaterials.Read())
+            while (true)
             {
-                Console.WriteLine($"{readerMaterials[0]} | {readerMaterials[1]} | {readerMaterials[2]} | {readerMaterials[3]} | {readerMaterials[4]} | {readerMaterials[5]} | {readerMaterials[6]}");
-            }
-            readerMaterials.Close();
+                Console.WriteLine("\nОберіть таблицю для перегляду:");
+                Console.WriteLine("1 - Матеріали");
+                Console.WriteLine("2 - Постачальники");
+                Console.WriteLine("3 - Замовлення");
+                Console.WriteLine("0 - Вихід");
+                Console.Write("Ваш вибір: ");
+                string input = Console.ReadLine();
 
-            string queryPostachalnyky = "SELECT * FROM postachalnyky;";
-            var commandPostachalnyky = new MySqlCommand(queryPostachalnyky, connection);
-            using var readerPostachalnyky = commandPostachalnyky.ExecuteReader();
-            Console.WriteLine("\nДані з таблиці 'Постачальники':");
-            while (readerPostachalnyky.Read())
-            {
-                Console.WriteLine($"{readerPostachalnyky[0]} | {readerPostachalnyky[1]} | {readerPostachalnyky[2]} | {readerPostachalnyky[3]} | {readerPostachalnyky[4]}");
-            }
-            readerPostachalnyky.Close();
+                switch (input)
+                {
+                    case "1":
+                        ShowMaterials(connection);
+                        break;
+                    case "2":
+                        ShowPostachalnyky(connection);
+                        break;
+                    case "3":
+                        ShowZamovlennya(connection);
+                        break;
+                    case "0":
+                        Console.WriteLine(" Програму завершено.");
+                        return;
+                    default:
+                        Console.WriteLine(" Невірний вибір. Спробуйте ще раз.");
+                        break;
+                }
 
-            string queryZamovlennya = "SELECT * FROM zamovlennya;";
-            var commandZamovlennya = new MySqlCommand(queryZamovlennya, connection);
-            using var readerZamovlennya = commandZamovlennya.ExecuteReader();
-            Console.WriteLine("\nДані з таблиці 'Замовлення':");
-            while (readerZamovlennya.Read())
-            {
-                Console.WriteLine($"{readerZamovlennya[0]} | {readerZamovlennya[1]} | {readerZamovlennya[2]} | {readerZamovlennya[3]} | {readerZamovlennya[4]} | {readerZamovlennya[5]} | {readerZamovlennya[6]}");
+                Console.WriteLine("\nНатисніть Enter, щоб повернутись до меню...");
+                Console.ReadLine();
+                Console.Clear();
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Помилка підключення: " + ex.Message);
+            Console.WriteLine(" Помилка підключення: " + ex.Message);
         }
-        Console.WriteLine("Натисніть Enter для виходу...");
-        Console.ReadLine();
+    }
+
+    static void ShowMaterials(MySqlConnection connection)
+    {
+        string query = "SELECT * FROM materials;";
+        var command = new MySqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
+
+        Console.WriteLine("\nДані з таблиці 'Матеріали':");
+
+        for (int i = 0; i < reader.FieldCount; i++)
+        {
+            string columnName = reader.GetName(i);
+            if (columnName.Length > 17)
+                columnName = columnName.Substring(0, 17) + "...";
+            Console.Write($"{columnName.PadRight(20)}");
+            if (i < reader.FieldCount - 1) Console.Write(" | ");
+        }
+        Console.WriteLine();
+
+        Console.WriteLine(new string('-', reader.FieldCount * 22));
+
+        while (reader.Read())
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string cell = reader[i].ToString();
+                if (cell.Length > 17)
+                    cell = cell.Substring(0, 17) + "...";
+                Console.Write($"{cell.PadRight(20)}");
+                if (i < reader.FieldCount - 1) Console.Write(" | ");
+            }
+            Console.WriteLine();
+        }
+
+        reader.Close();
+    }
+
+
+    static void ShowPostachalnyky(MySqlConnection connection)
+    {
+        string query = "SELECT * FROM postachalnyky;";
+        var command = new MySqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
+
+        Console.WriteLine("\nДані з таблиці 'Постачальники':");
+
+        for (int i = 0; i < reader.FieldCount; i++)
+        {
+            string columnName = reader.GetName(i);
+            Console.Write($"{columnName.PadRight(20)}");
+            if (i < reader.FieldCount - 1) Console.Write(" | ");
+        }
+        Console.WriteLine();
+
+        Console.WriteLine(new string('-', reader.FieldCount * 22));
+
+        while (reader.Read())
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string cell = reader[i].ToString();
+                if (cell.Length > 20)
+                    cell = cell.Substring(0, 17) + "...";
+                Console.Write($"{cell.PadRight(20)}");
+                if (i < reader.FieldCount - 1) Console.Write(" | ");
+            }
+            Console.WriteLine();
+        }
+
+        reader.Close();
+    }
+
+    static void ShowZamovlennya(MySqlConnection connection)
+    {
+        string query = "SELECT * FROM zamovlennya;";
+        var command = new MySqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
+
+        Console.WriteLine("\nДані з таблиці 'Замовлення':");
+
+        for (int i = 0; i < reader.FieldCount; i++)
+        {
+            string columnName = reader.GetName(i);
+            if (columnName.Length > 17)
+                columnName = columnName.Substring(0, 17) + "...";
+            Console.Write($"{columnName.PadRight(20)}");
+            if (i < reader.FieldCount - 1) Console.Write(" | ");
+        }
+        Console.WriteLine();
+
+        Console.WriteLine(new string('-', reader.FieldCount * 22));
+
+        while (reader.Read())
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string cell = reader[i].ToString();
+                if (cell.Length > 17)
+                    cell = cell.Substring(0, 17) + "...";
+                Console.Write($"{cell.PadRight(20)}");
+                if (i < reader.FieldCount - 1) Console.Write(" | ");
+            }
+            Console.WriteLine();
+        }
+
+        reader.Close();
     }
 }
